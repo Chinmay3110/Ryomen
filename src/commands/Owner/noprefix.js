@@ -17,7 +17,7 @@ const db = require("../../schema/noprefix");
 
 module.exports = {
   name: "noprefix",
-  aliases: ["nop"],
+  aliases: ["npr"],
   category: "Owner",
   description: "Manage NoPrefix status and tiers for users.",
   args: true,
