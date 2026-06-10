@@ -11,7 +11,7 @@ module.exports = {
   mongourl:
     "mongodb+srv://codex-in2:codex-in2@codex-in2.gjv2c.mongodb.net/?retryWrites=true&w=majority",
   embedColor: "#2f3136",
-  logs: "https://discord.com/api/webhooks/1399187361694482462/--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
+  logs: "https://canary.discord.com/api/webhooks/1514345345939800195/lmdFq6Eo7qx3R9aCAH-2eMjSZKF7Qz1n1YEJNSF8NtqZE5OWo293d1eEAqT3anl8P8I-",
   node_source: "ytsearch",
   topgg:
     "here",
@@ -28,16 +28,16 @@ module.exports = {
     topgg: "https://discord.gg/Uvpzeh85Ux",
   },
   Webhooks: {
-      black: "https://discord.com/api/webhooks/1399187361694482462/MtGa--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
+      black: "https://canary.discord.com/api/webhooks/1514345345939800195/lmdFq6Eo7qx3R9aCAH-2eMjSZKF7Qz1n1YEJNSF8NtqZE5OWo293d1eEAqT3anl8P8I-",
     player_create:
-      "https://discord.com/api/webhooks/1399187361694482462/MtGa--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
+      "https://canary.discord.com/api/webhooks/1514345345939800195/lmdFq6Eo7qx3R9aCAH-2eMjSZKF7Qz1n1YEJNSF8NtqZE5OWo293d1eEAqT3anl8P8I-",
     player_delete:
-      "https://discord.com/api/webhooks/1399187361694482462/MtGa--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
+      "https://canary.discord.com/api/webhooks/1514345345939800195/lmdFq6Eo7qx3R9aCAH-2eMjSZKF7Qz1n1YEJNSF8NtqZE5OWo293d1eEAqT3anl8P8I-",
     guild_join:
-      "https://discord.com/api/webhooks/1399187361694482462/MtGa--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
-      guild_leave: "https://discord.com/api/webhooks//MtGa--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
+      "https://canary.discord.com/api/webhooks/1514345345939800195/lmdFq6Eo7qx3R9aCAH-2eMjSZKF7Qz1n1YEJNSF8NtqZE5OWo293d1eEAqT3anl8P8I-",
+      guild_leave: "https://canary.discord.com/api/webhooks/1514345345939800195/lmdFq6Eo7qx3R9aCAH-2eMjSZKF7Qz1n1YEJNSF8NtqZE5OWo293d1eEAqT3anl8P8I-",
     cmdrun:
- "https://discord.com/api/webhooks/1399187361694482462/MtGa--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
+ "https://canary.discord.com/api/webhooks/1514345345939800195/lmdFq6Eo7qx3R9aCAH-2eMjSZKF7Qz1n1YEJNSF8NtqZE5OWo293d1eEAqT3anl8P8I-",
   },
 
   nodes: [
