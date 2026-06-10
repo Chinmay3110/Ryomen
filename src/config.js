@@ -5,7 +5,7 @@ module.exports = {
   token: process.env.TOKEN,
   clientId: "1514262534637748334",
   prefix: "$",
-  ownerID: "870179991462236170",
+  ownerID: "1507444616759218176",
   SpotifyID: "85aab1d51a174aad9eed6d7989f530e6",
   SpotifySecret: "b2ad05aa725e434c88776a1be8eab6c2",
   mongourl:
