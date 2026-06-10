@@ -5,24 +5,27 @@
  *
  */
 
+const { EmbedBuilder } = require("discord.js");
+
 module.exports = {
   name: "simprate",
   aliases: ["simp"],
   description: "simp",
   cooldown: 3,
-  userPermissions: [],
-  botPermissions: [],
+  userPerms: [],
+  botPerms: [],
   category: "Fun",
   execute: async (message, args, client, prefix) => {
-    const Member = message.mentions.members.first() || message.author;
+    const member = message.mentions.members.first() || message.member;
+    const username = member?.user?.username || message.author.username;
+    const result = Math.floor(Math.random() * 101);
 
-    const Result = Math.floor(Math.random() * 101);
     const embed = new EmbedBuilder()
       .setColor(client.color)
       .setDescription(
-        `**${Member.user.username} Is ${Result}% Simp <:simpers_Eyes_AE:1194607509445550161>**`,
+        `**${username} Is ${result}% Simp <:simpers_Eyes_AE:1194607509445550161>**`,
       );
 
-    message.channel.send({ embeds: [embed] });
+    return message.channel.send({ embeds: [embed] }).catch(() => null);
   },
 };
