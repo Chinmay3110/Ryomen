@@ -1,8 +1,8 @@
 /** @format */
+require("dotenv").config();
 
 module.exports = {
-  token:
-    "MTUxNDI2MjUzNDYzNzc0ODMzNA.GhYaNu.DTm-24F77-APfMEhgKJ2XPwWNS8vLWJmrmNnm8",
+  token: process.env.TOKEN,
   clientId: "1514262534637748334",
   prefix: "$",
   ownerID: "870179991462236170",
