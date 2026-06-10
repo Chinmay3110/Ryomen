@@ -3,8 +3,8 @@
 module.exports = {
   token:
     "MTUxNDI2MjUzNDYzNzc0ODMzNA.GGApo8.k9zRJXZhVNGIcZ6x1_sGs6CKuMl51Gz-8hqTgA",
-  clientId: "1399186967966519326",
-  prefix: ">",
+  clientId: "1514262534637748334",
+  prefix: "$",
   ownerID: "870179991462236170",
   SpotifyID: "85aab1d51a174aad9eed6d7989f530e6",
   SpotifySecret: "b2ad05aa725e434c88776a1be8eab6c2",
@@ -21,11 +21,11 @@ module.exports = {
     invite:
       "https://discord.com/api/oauth2/authorize?client_id=1399186967966519326&permissions=824671333721&scope=bot",
     arrkiii:
-      "https://cdn.discordapp.com/attachments/1187323477032697867/1236626903847407696/Arrkiii.gif",
-    power: "Powered By Arrkiii Development 🌙",
-    vanity: "discord.gg/urV9mkfW9t",
-    guild: "1325384856477368420",
-    topgg: "https://top.gg/bot/1033496708992204840/vote",
+      "https://cdn.discordapp.com/attachments/1513435221771423804/1514267242538340473/ac99e4217e0be00c8e2b2a51727cc222_720w.gif?ex=6a2abec4&is=6a296d44&hm=f4972ac4ff7d4eaf593552b5e29bbfdcd51e750921278a0d1b1b778c2ec14919",
+    power: "Powered By Daddy Xylus 🌙",
+    vanity: "https://discord.gg/Uvpzeh85Ux",
+    guild: "1499441279145214112",
+    topgg: "",
   },
   Webhooks: {
       black: "https://discord.com/api/webhooks/1399187361694482462/MtGa--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
@@ -42,10 +42,10 @@ module.exports = {
 
   nodes: [
     {
-       url: process.env.NODE_URL || "lava-v4.ajieblogs.eu.org:443",
+       url: process.env.NODE_URL || "sg2-nodelink.nyxbot.app:3000",
       name: process.env.NODE_NAME || "Lavalink",
-      auth: process.env.NODE_AUTH || "https://dsc.gg/ajidevserver",
-      secure: parseBoolean(process.env.NODE_SECURE || "true"),
+      auth: process.env.NODE_AUTH || "nyxbot.app/support",
+      secure: parseBoolean(process.env.NODE_SECURE || "false"),
     },
   ],
 };
