@@ -42,9 +42,9 @@ module.exports = {
 
   nodes: [
     {
-       url: process.env.NODE_URL || "sg2-nodelink.nyxbot.app:3000",
+       url: process.env.NODE_URL || "nexus.voidhosting.vip:6004",
       name: process.env.NODE_NAME || "Lavalink",
-      auth: process.env.NODE_AUTH || "nyxbot.app/support",
+      auth: process.env.NODE_AUTH || "cocaine",
       secure: parseBoolean(process.env.NODE_SECURE || "false"),
     },
   ],
