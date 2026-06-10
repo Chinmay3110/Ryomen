@@ -23,7 +23,7 @@ module.exports = {
     arrkiii:
       "https://cdn.discordapp.com/attachments/1513435221771423804/1514267242538340473/ac99e4217e0be00c8e2b2a51727cc222_720w.gif?ex=6a2abec4&is=6a296d44&hm=f4972ac4ff7d4eaf593552b5e29bbfdcd51e750921278a0d1b1b778c2ec14919",
     power: "Powered By Daddy Xylus 🌙",
-    vanity: "https://discord.gg/Uvpzeh85Ux",
+    vanity: "https://discord.gg/P4v7Qw9X2F",
     guild: "1499441279145214112",
     topgg: "https://discord.gg/Uvpzeh85Ux",
   },
