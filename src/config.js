@@ -25,7 +25,7 @@ module.exports = {
     power: "Powered By Daddy Xylus 🌙",
     vanity: "https://discord.gg/Uvpzeh85Ux",
     guild: "1499441279145214112",
-    topgg: "",
+    topgg: "https://discord.gg/Uvpzeh85Ux",
   },
   Webhooks: {
       black: "https://discord.com/api/webhooks/1399187361694482462/MtGa--yD8NpadUuQJ2_XG8tfWRraU1MnDyRhtnpqr825pDo",
