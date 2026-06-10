@@ -10,7 +10,8 @@ module.exports = {
   args: true,
   usage: "<user>",
   owner: false,
-  execute: async (message, args, client, prefix) => {
+
+  execute: async (message, args, client) => {
     const user = message.mentions.users.first();
 
     if (!user) {
@@ -18,9 +19,9 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription(`Please mention a user to lick.`),
+            .setDescription("Please mention a user to lick."),
         ],
-      }).catch(() => null);
+      });
     }
 
     if (user.id === message.author.id) {
@@ -28,36 +29,38 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription(`You can't lick yourself.`),
+            .setDescription("You can't lick yourself."),
         ],
-      }).catch(() => null);
+      });
     }
 
     try {
-      const response = await axios.get("https://api.waifu.pics/sfw/lick", {
-        timeout: 10000,
-      });
+      const res = await axios.get(
+        "https://nekos.best/api/v2/lick",
+        { timeout: 10000 }
+      );
 
-      const image = response?.data?.url;
-      if (!image) throw new Error("No image returned from waifu.pics");
+      const image = res.data.results[0].url;
 
       const embed = new EmbedBuilder()
         .setColor(client.color)
-        .setDescription(`${message.author} Licks ${user}`)
+        .setDescription(`${message.author} licks ${user}`)
         .setImage(image)
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embed] }).catch(() => null);
-    } catch (err) {
-      console.error("waifu.pics API error:", err.code || err.message);
+      return message.channel.send({ embeds: [embed] });
 
-      return message.channel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(client.color)
-            .setDescription("❌ Anime image API is not reachable right now. Please try again later."),
-        ],
-      }).catch(() => null);
+    } catch (err) {
+      console.error("Lick API Error:", err);
+
+      const fallbackEmbed = new EmbedBuilder()
+        .setColor(client.color)
+        .setDescription(`${message.author} licks ${user} 😋`)
+        .setImage(
+          "https://i.imgur.com/4M34hi2.gif"
+        );
+
+      return message.channel.send({ embeds: [fallbackEmbed] });
     }
   },
 };
