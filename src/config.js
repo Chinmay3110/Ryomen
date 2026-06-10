@@ -42,9 +42,9 @@ module.exports = {
 
   nodes: [
     {
-       url: process.env.NODE_URL || "lavalink.jirayu.net:13592",
+       url: process.env.NODE_URL || "n3.nexcloud.in:2026",
       name: process.env.NODE_NAME || "Lavalink",
-      auth: process.env.NODE_AUTH || "youshallnotpass",
+      auth: process.env.NODE_AUTH || "nexcloud",
       secure: parseBoolean(process.env.NODE_SECURE || "false"),
     },
   ],
