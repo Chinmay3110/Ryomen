@@ -48,8 +48,8 @@ module.exports = {
     await deploySlashCommands(client);
 
     const statuses = [
-      ">help | >play",
-      "Arrkiii Development <3",
+      "$help | $play",
+      "Made By DaddyXylus",
       "Trusted By " + client.numb(user) + " Users",
       client.config.links.vanity,
     ];
