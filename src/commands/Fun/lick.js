@@ -21,7 +21,7 @@ module.exports = {
             .setColor(client.color)
             .setDescription("Please mention a user to lick."),
         ],
-      });
+      }).catch(() => null);
     }
 
     if (user.id === message.author.id) {
@@ -31,36 +31,63 @@ module.exports = {
             .setColor(client.color)
             .setDescription("You can't lick yourself."),
         ],
-      });
+      }).catch(() => null);
     }
 
-    try {
-      const res = await axios.get(
-        "https://nekos.best/api/v2/lick",
-        { timeout: 10000 }
-      );
+    let image = null;
 
-      const image = res.data.results[0].url;
+    const apis = [
+      {
+        url: "https://nekos.best/api/v2/lick",
+        parser: (data) => data?.results?.[0]?.url,
+      },
+      {
+        url: "https://api.otakugifs.xyz/gif?reaction=lick",
+        parser: (data) => data?.url,
+      },
+      {
+        url: "https://api.waifu.pics/sfw/lick",
+        parser: (data) => data?.url,
+      },
+    ];
 
-      const embed = new EmbedBuilder()
-        .setColor(client.color)
-        .setDescription(`${message.author} licks ${user}`)
-        .setImage(image)
-        .setTimestamp();
+    for (const api of apis) {
+      try {
+        const res = await axios.get(api.url, {
+          timeout: 10000,
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+          },
+        });
 
-      return message.channel.send({ embeds: [embed] });
+        image = api.parser(res.data);
 
-    } catch (err) {
-      console.error("Lick API Error:", err);
-
-      const fallbackEmbed = new EmbedBuilder()
-        .setColor(client.color)
-        .setDescription(`${message.author} licks ${user} 😋`)
-        .setImage(
-          "https://i.imgur.com/4M34hi2.gif"
+        if (image) break;
+      } catch (err) {
+        console.log(
+          `[LICK] ${api.url} failed:`,
+          err.code || err.message
         );
-
-      return message.channel.send({ embeds: [fallbackEmbed] });
+      }
     }
+
+    if (!image) {
+      image =
+        "https://media.tenor.com/0AVbKGY_MxMAAAAC/anime-lick.gif";
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(client.color)
+      .setDescription(`${message.author} licks ${user} 😋`)
+      .setImage(image)
+      .setFooter({
+        text: `Requested by ${message.author.username}`,
+        iconURL: message.author.displayAvatarURL({ dynamic: true }),
+      })
+      .setTimestamp();
+
+    return message.channel.send({
+      embeds: [embed],
+    }).catch(() => null);
   },
 };
