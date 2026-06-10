@@ -23,7 +23,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(client.color)
       .setDescription(
-        `**${username} Is ${result}% Simp <:simpers_Eyes_AE:1194607509445550161>**`,
+        `**${username} Is ${result}% Simp <a:Xieron_stolen_emoji_1781120255:1514352853521793214>**`,
       );
 
     return message.channel.send({ embeds: [embed] }).catch(() => null);
