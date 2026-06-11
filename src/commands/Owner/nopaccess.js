@@ -11,7 +11,7 @@ module.exports = {
   description: "Manage NoPrefix access users",
   args: false,
   usage: "add/remove/list/clear <user>",
-  owner: true,
+  owner: false,
 
   execute: async (message, args, client, prefix) => {
     if (message.author.id !== client.config.ownerID) {
