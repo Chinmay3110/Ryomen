@@ -17,28 +17,21 @@ module.exports = {
       return message.reply("You can't kill yourself.");
 
     try {
-      const { data } = await axios.get(
-        "https://api.otakugifs.xyz/gif?reaction=kill"
-      );
+      const res = await axios.get("https://api.waifu.pics/sfw/kill");
 
       const embed = new EmbedBuilder()
         .setColor(client.color)
         .setDescription(`🔪 ${message.author} killed ${user}`)
-        .setImage(data.url)
+        .setImage(res.data.url)
         .setTimestamp();
 
-      return message.channel.send({
-        embeds: [embed],
-      });
+      return message.channel.send({ embeds: [embed] });
+
     } catch (err) {
       console.log(err);
 
       return message.channel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Red")
-            .setDescription("Failed to fetch anime GIF."),
-        ],
+        content: "Failed to fetch GIF."
       });
     }
   },
