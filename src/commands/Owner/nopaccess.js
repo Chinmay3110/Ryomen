@@ -14,15 +14,11 @@ module.exports = {
   owner: true,
 
   execute: async (message, args, client, prefix) => {
-    const ownerIds = [
-      client.config?.ownerID,
-      client.owner,
-      "1507444616759218176",
-    ].filter(Boolean);
-
-    if (!ownerIds.includes(message.author.id)) {
-      return message.channel.send("___Only bot owner can use this command!___");
-    }
+    if (message.author.id !== client.config.ownerID) {
+  return message.channel.send(
+    "___Only bot owner can use this command!___"
+  );
+}
 
     if (!args[0]) {
       return message.channel.send({
