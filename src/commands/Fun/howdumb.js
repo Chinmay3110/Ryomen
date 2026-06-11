@@ -38,7 +38,7 @@ module.exports = {
       const Dumbdalle = new EmbedBuilder()
         .setColor(client.color)
         .setDescription(
-          `**${User} is ${gayrate}% dumb! <:orchuu_cutie:1217905176107815063>**`,
+          `**${User} is ${gayrate}% dumb! <:Xieron_stolen_emoji_1781165053:1514540749310525631>**`,
         );
 
       message.channel.send({ embeds: [Dumbdalle] });
