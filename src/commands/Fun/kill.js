@@ -2,8 +2,8 @@ const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "kill",
+  aliases: ["murder"],
   category: "Fun",
-  aliases: ["kill"],
   cooldown: 3,
   description: "Kill someone",
   args: true,
@@ -18,9 +18,9 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription("Please mention a user to kill."),
+            .setDescription("❌ Please mention a user to kill."),
         ],
-      }).catch(() => null);
+      });
     }
 
     if (user.id === message.author.id) {
@@ -28,28 +28,29 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription("You can't kill yourself."),
+            .setDescription("❌ You can't kill yourself."),
         ],
-      }).catch(() => null);
+      });
     }
 
-    const images = [
-      "https://i.imgur.com/8Km9tLL.gif",
-      "https://i.imgur.com/F6N0z.gif",
-      "https://i.imgur.com/yXOvdOS.gif",
+    const gifs = [
+      "https://c.tenor.com/6a42QlkVsCEAAAAC/anime-sword.gif",
+      "https://c.tenor.com/rMVO0K7sM0QAAAAC/anime-fight.gif",
+      "https://c.tenor.com/x8v1oNUOmg4AAAAC/anime-fight.gif",
+      "https://c.tenor.com/oQnM1l4b7zUAAAAC/anime-attack.gif",
+      "https://c.tenor.com/epNMHGvRyHcAAAAC/anime-kill.gif"
     ];
 
-    const image = images[Math.floor(Math.random() * images.length)];
+    const gif = gifs[Math.floor(Math.random() * gifs.length)];
 
     const embed = new EmbedBuilder()
       .setColor(client.color)
       .setDescription(`🔪 ${message.author} killed ${user}`)
-      .setImage(image)
+      .setImage(gif)
       .setTimestamp();
 
     return message.channel.send({
-      content: image,
       embeds: [embed],
-    }).catch(() => null);
+    });
   },
 };
