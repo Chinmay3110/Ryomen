@@ -38,7 +38,7 @@ module.exports = {
       const gaydalle = new EmbedBuilder()
         .setColor(client.color)
         .setDescription(
-          `**${User} is ${gayrate}% gay! <:orchuu_cutie:1217905176107815063>**`,
+          `**${User} is ${gayrate}% gay! <:Xieron_stolen_emoji_1781164847:1514539890354815118>**`,
         );
 
       message.channel.send({ embeds: [gaydalle] });
