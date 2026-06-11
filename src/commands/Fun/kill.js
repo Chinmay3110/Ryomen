@@ -1,56 +1,45 @@
 const { EmbedBuilder } = require("discord.js");
+const axios = require("axios");
 
 module.exports = {
   name: "kill",
   aliases: ["murder"],
   category: "Fun",
   cooldown: 3,
-  description: "Kill someone",
-  args: true,
-  usage: "<user>",
-  owner: false,
 
   execute: async (message, args, client) => {
     const user = message.mentions.users.first();
 
-    if (!user) {
-      return message.reply({
+    if (!user)
+      return message.reply("Mention someone to kill.");
+
+    if (user.id === message.author.id)
+      return message.reply("You can't kill yourself.");
+
+    try {
+      const { data } = await axios.get(
+        "https://api.otakugifs.xyz/gif?reaction=kill"
+      );
+
+      const embed = new EmbedBuilder()
+        .setColor(client.color)
+        .setDescription(`🔪 ${message.author} killed ${user}`)
+        .setImage(data.url)
+        .setTimestamp();
+
+      return message.channel.send({
+        embeds: [embed],
+      });
+    } catch (err) {
+      console.log(err);
+
+      return message.channel.send({
         embeds: [
           new EmbedBuilder()
-            .setColor(client.color)
-            .setDescription("❌ Please mention a user to kill."),
+            .setColor("Red")
+            .setDescription("Failed to fetch anime GIF."),
         ],
       });
     }
-
-    if (user.id === message.author.id) {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(client.color)
-            .setDescription("❌ You can't kill yourself."),
-        ],
-      });
-    }
-
-    const gifs = [
-      "https://c.tenor.com/6a42QlkVsCEAAAAC/anime-sword.gif",
-      "https://c.tenor.com/rMVO0K7sM0QAAAAC/anime-fight.gif",
-      "https://c.tenor.com/x8v1oNUOmg4AAAAC/anime-fight.gif",
-      "https://c.tenor.com/oQnM1l4b7zUAAAAC/anime-attack.gif",
-      "https://c.tenor.com/epNMHGvRyHcAAAAC/anime-kill.gif"
-    ];
-
-    const gif = gifs[Math.floor(Math.random() * gifs.length)];
-
-    const embed = new EmbedBuilder()
-      .setColor(client.color)
-      .setDescription(`🔪 ${message.author} killed ${user}`)
-      .setImage(gif)
-      .setTimestamp();
-
-    return message.channel.send({
-      embeds: [embed],
-    });
   },
 };
