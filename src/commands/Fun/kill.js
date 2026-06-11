@@ -2,41 +2,24 @@ const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "kill",
-  aliases: ["murder"],
   category: "Fun",
+  aliases: ["kill"],
   cooldown: 3,
-  description: "Kill someone",
-  args: true,
-  usage: "<user>",
 
   execute: async (message, args, client) => {
     const user = message.mentions.users.first();
 
-    if (!user) {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(client.color)
-            .setDescription("❌ Please mention a user to kill."),
-        ],
-      });
-    }
+    if (!user)
+      return message.reply("Mention a user.");
 
-    if (user.id === message.author.id) {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(client.color)
-            .setDescription("❌ You can't kill yourself."),
-        ],
-      });
-    }
+    if (user.id === message.author.id)
+      return message.reply("You can't kill yourself.");
 
     const gifs = [
-      "https://i.imgur.com/8Km9tLL.gif",
-      "https://i.imgur.com/2X6nR9K.gif",
-      "https://i.imgur.com/B5QJ8zH.gif",
-      "https://i.imgur.com/W9WJ4Yk.gif"
+      "https://c.tenor.com/Ug6CbVA1ZsMAAAAd/anime-fight.gif",
+      "https://c.tenor.com/8uP8M2p0kQ8AAAAd/anime-sword.gif",
+      "https://c.tenor.com/4bY0bJ5n8jQAAAAd/anime-attack.gif",
+      "https://c.tenor.com/3zzjM_k8aA4AAAAd/anime-kill.gif"
     ];
 
     const gif = gifs[Math.floor(Math.random() * gifs.length)];
@@ -44,11 +27,8 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(client.color)
       .setDescription(`🔪 ${message.author} killed ${user}`)
-      .setImage(gif)
-      .setTimestamp();
+      .setImage(gif);
 
-    return message.channel.send({
-      embeds: [embed],
-    });
+    return message.channel.send({ embeds: [embed] });
   },
 };
