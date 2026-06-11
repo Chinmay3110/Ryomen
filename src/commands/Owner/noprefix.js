@@ -20,19 +20,18 @@ module.exports = {
   usage: "<user | list>",
 
   execute: async (message, args, client) => {
-    const ownerIds = [
-      client.config?.ownerID,
-      client.owner,
-      "1507444616759218176",
-    ].filter(Boolean);
+    const access = await NopAccess.findOne({
+  userId: message.author.id,
+});
 
-    if (!ownerIds.includes(message.author.id)) {
-      const access = await NopAccess.findOne({ userId: message.author.id });
-
-      if (!access) {
-        return message.channel.send("___You are not allowed to use this command!___");
-      }
-    }
+if (
+  message.author.id !== client.config.ownerID &&
+  !access
+) {
+  return message.channel.send(
+    "___You are not allowed to use this command!___"
+  );
+}
 
     if (!args[0]) {
       return message.reply("Usage: `noprefix <user | list>`");
