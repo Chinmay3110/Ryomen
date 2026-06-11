@@ -1,27 +1,27 @@
 const {
   EmbedBuilder,
-  MessageFlags,
-  collector,
-  ButtonBuilder,
-  ButtonStyle,
-  ActionRowBuilder,
 } = require("discord.js");
+
 const db = require("../../schema/accessnop");
-const lodash = require("lodash");
 
 module.exports = {
-  name: `nopaccess`,
+  name: "nopaccess",
   aliases: ["nopperms", "npp"],
   category: "Owner",
-  description: "No prefix toggling",
+  description: "Manage NoPrefix access users",
   args: false,
-  usage: "",
+  usage: "add/remove/list/clear <user>",
   owner: true,
+
   execute: async (message, args, client, prefix) => {
-    const PanDa = client.users.cache.get("504232260548165633");
-    if (!PanDa) {
-      message.channel.send(`Sirf ${PanDa} Access De Sakta Hain Lawde`);
-      return;
+    const ownerIds = [
+      client.config?.ownerID,
+      client.owner,
+      "1507444616759218176",
+    ].filter(Boolean);
+
+    if (!ownerIds.includes(message.author.id)) {
+      return message.channel.send("___Only bot owner can use this command!___");
     }
 
     if (!args[0]) {
@@ -30,7 +30,7 @@ module.exports = {
           new EmbedBuilder()
             .setColor(client.color)
             .setDescription(
-              ` \`\`\`[] = Optional Argument\n<> = Required Argument\nDo NOT type these when using commands!)\`\`\`\n\n**Aliases:**\n\`\`[access]\`\`\n**Usage:**\n\`\`add/remove/list\`\``,
+              `**Usage:**\n\`${prefix}nopaccess add <user>\`\n\`${prefix}nopaccess remove <user>\`\n\`${prefix}nopaccess list\`\n\`${prefix}nopaccess clear\``,
             ),
         ],
       });
@@ -38,84 +38,100 @@ module.exports = {
 
     const opt = args[0].toLowerCase();
 
-    if (opt === `add` || opt === `a` || opt === `+`) {
+    if (opt === "add" || opt === "a" || opt === "+") {
       const user =
-        message.mentions.users.first() || client.users.cache.get(args[1]);
-      if (!user) return message.reply({ content: `Provide me a valid user` });
+        message.mentions.users.first() ||
+        (args[1] ? await client.users.fetch(args[1]).catch(() => null) : null);
 
-      const npData = await db.findOne({ userId: user.id });
-      if (npData)
-        return message.reply({
-          content: `<:arrkiii:1187678838759628800> | This user is already in my nopaccess system.`,
-        });
-      else {
-        const data = await db.create({
-          userId: user.id,
-          noprefix: true,
-        });
-
-        const embedn = new EmbedBuilder()
-          .setColor(client.color)
-          .setDescription(
-            `_Now ${user} U Have NopAccess! Add By ${message.author}_`,
-          )
-          .setFooter({
-            text: `Keep Supporting Us <3`,
-            iconURL: message.guild.iconURL(),
-          });
-
-        return message.reply({ embeds: [embedn] });
+      if (!user) {
+        return message.reply({ content: "Provide me a valid user." });
       }
-    }
-    if (opt === `remove` || opt === `r` || opt === `-`) {
-      const user =
-        message.mentions.users.first() || client.users.cache.get(args[1]);
-      if (!user) return message.reply({ content: `Provide me a valid user` });
 
       const npData = await db.findOne({ userId: user.id });
-      if (!npData)
-        return message.reply({
-          content: `<:arrkiii:1187678838759628800> | Ye Prani Mere Nop Access Me Nahi Hain`,
-        });
 
-      await db.deleteOne({ userId: user.id });
+      if (npData) {
+        return message.reply({
+          content: "This user is already in my NopAccess system.",
+        });
+      }
+
+      await db.create({
+        userId: user.id,
+        noprefix: true,
+      });
+
       return message.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription(
-              `${client.emoji.tick} | SuccessFully **Removed** ${user} From My NopAccess`,
-            ),
+            .setDescription(`✅ Now ${user} has NopAccess. Added by ${message.author}.`)
+            .setFooter({
+              text: "Keep Supporting Us <3",
+              iconURL: message.guild?.iconURL() || client.user.displayAvatarURL(),
+            }),
         ],
       });
     }
 
-    if (args[0].toLowerCase() === `list` || args[0].toLowerCase() === `show`) {
-      const data = await db.find();
-      const listing = [];
-      data.forEach((x) => listing.push(x.userId));
+    if (opt === "remove" || opt === "r" || opt === "-") {
+      const user =
+        message.mentions.users.first() ||
+        (args[1] ? await client.users.fetch(args[1]).catch(() => null) : null);
 
-      if (!listing.length) {
-        return message.reply({ content: `There Is No User In My NopAccess` });
+      if (!user) {
+        return message.reply({ content: "Provide me a valid user." });
       }
-      const list = data.map((x) => `<@${x.userId}>`);
-      const embed = new EmbedBuilder()
-        .setColor(client.color)
-        .setAuthor({ name: `NopAccess List`, iconURL: message.guild.iconURL() })
-        .setFooter({
-          text: `${PanDa.username}`,
-          iconURL: PanDa.displayAvatarURL(),
-        })
-        .setDescription(`${list.join("\n")}`);
-      return message.channel.send({ embeds: [embed] });
-    } else if (opt === `clear`) {
-      const data = await db();
 
-      if (!data) return message.channel.send({ content: `0` });
-      await db.deleteMany();
-      return message.channel.send({
-        content: `Successfully Cleared Access Of Nop`,
+      const npData = await db.findOne({ userId: user.id });
+
+      if (!npData) {
+        return message.reply({
+          content: "This user is not in my NopAccess system.",
+        });
+      }
+
+      await db.deleteOne({ userId: user.id });
+
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(client.color)
+            .setDescription(`${client.emoji.tick} Successfully removed ${user} from NopAccess.`),
+        ],
       });
     }
+
+    if (opt === "list" || opt === "show") {
+      const data = await db.find();
+
+      if (!data.length) {
+        return message.reply({ content: "There is no user in my NopAccess." });
+      }
+
+      const list = data.map((x, i) => `\`${i + 1}.\` <@${x.userId}>`).join("\n");
+
+      return message.channel.send({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(client.color)
+            .setAuthor({
+              name: "NopAccess List",
+              iconURL: message.guild?.iconURL() || client.user.displayAvatarURL(),
+            })
+            .setDescription(list),
+        ],
+      });
+    }
+
+    if (opt === "clear") {
+      await db.deleteMany({});
+      return message.channel.send({
+        content: "Successfully cleared all NopAccess users.",
+      });
+    }
+
+    return message.reply({
+      content: `Invalid option. Use \`${prefix}nopaccess add/remove/list/clear\`.`,
+    });
   },
 };
