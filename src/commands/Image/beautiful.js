@@ -1,38 +1,58 @@
-const { EmbedBuilder, MessageFlags, AttachmentBuilder } = require("discord.js");
-const { Canvas } = require("canvafy");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const { Canvafy } = require("canvafy");
 
 module.exports = {
   name: "beautiful",
-  description: "Create a 'beautiful' meme image for the mentioned user.",
-  usage: "beautiful <user>",
-  cooldown: 3,
   category: "Image",
-  execute: async (message, args, client, prefix) => {
-    const user = message.mentions.users.first() || message.author; // Default to the author if no user is mentioned.
-    const avatar = user.displayAvatarURL({
-      dynamic: false,
-      format: "png",
-      size: 512,
-    }); // Canvafy supports PNG format.
+  aliases: ["beauty"],
+  cooldown: 3,
+  description: "Make someone beautiful",
+  args: false,
+  usage: "[user]",
+  owner: false,
+
+  execute: async (message, args, client) => {
+    const user = message.mentions.users.first() || message.author;
 
     try {
-      // Generate the 'beautiful' image.
-      const canvas = new Canvas();
-      const image = await canvas.beautiful(avatar);
+      const image = await new Canvafy.Beautiful()
+        .setAvatar(
+          user.displayAvatarURL({
+            extension: "png",
+            size: 512,
+          })
+        )
+        .build();
 
-      // Create an attachment and embed the image.
       const attachment = new AttachmentBuilder(image, {
         name: "beautiful.png",
       });
-      const embed = new EmbedBuilder()
-        .setTitle(`${user.username} looks... beautiful!`)
-        .setColor(client.color || "#2f3136")
-        .setImage("attachment://beautiful.png");
 
-      return message.channel.send({ embeds: [embed], files: [attachment] });
-    } catch (error) {
-      console.error(error);
-      return message.reply("An error occurred while generating the image.");
+      const embed = new EmbedBuilder()
+        .setColor(client.color)
+        .setDescription(`✨ ${user} is beautiful!`)
+        .setImage("attachment://beautiful.png")
+        .setFooter({
+          text: `Requested by ${message.author.username}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
+        .setTimestamp();
+
+      return message.channel.send({
+        embeds: [embed],
+        files: [attachment],
+      }).catch(() => null);
+
+    } catch (err) {
+      console.log("[BEAUTIFUL]", err);
+
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Red")
+            .setDescription("❌ Failed to generate image."),
+        ],
+      }).catch(() => null);
     }
   },
 };
