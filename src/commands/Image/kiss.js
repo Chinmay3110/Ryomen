@@ -1,12 +1,10 @@
 const { EmbedBuilder } = require("discord.js");
-const axios = require("axios");
 
 module.exports = {
   name: "kiss",
   description: "Kiss someone",
   category: "Image",
   cooldown: 3,
-  botPermissions: ["SendMessages", "EmbedLinks"],
 
   execute: async (message, args, client) => {
     const user = message.mentions.users.first();
@@ -21,16 +19,6 @@ module.exports = {
       });
     }
 
-    if (user.bot) {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(client.color)
-            .setDescription("❌ You can't kiss bots."),
-        ],
-      });
-    }
-
     if (user.id === message.author.id) {
       return message.reply({
         embeds: [
@@ -41,30 +29,16 @@ module.exports = {
       });
     }
 
-    try {
-      const { data } = await axios.get(
-        "https://api.waifu.pics/sfw/kiss"
-      );
+    const gifs = [
+      "https://nekos.best/api/v2/kiss"
+    ];
 
-      const embed = new EmbedBuilder()
-        .setColor(client.color)
-        .setDescription(`💋 ${message.author} kisses ${user}`)
-        .setImage(data.url)
-        .setTimestamp();
+    const embed = new EmbedBuilder()
+      .setColor(client.color)
+      .setDescription(`💋 ${message.author} kisses ${user}`)
+      .setImage("https://c.tenor.com/I8kWjuAtX-QAAAAC/anime-ano.gif")
+      .setTimestamp();
 
-      return message.channel.send({
-        embeds: [embed],
-      });
-    } catch (err) {
-      console.error(err);
-
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Red")
-            .setDescription("❌ Failed to fetch a kiss image."),
-        ],
-      });
-    }
+    return message.channel.send({ embeds: [embed] });
   },
 };
