@@ -37,7 +37,7 @@ module.exports = {
         iconURL: client.user.displayAvatarURL({ dynamic: true, size: 2048 }),
       })
       .setDescription(
-        `> ***[${message.author.username}](https://discord.com/users/${message.author.id})*** ***Konichiwa!!*** ***Our Bot Is A Versatile And Intelligent Digital Assistant Designed To Handle A Wide Range Of Tasks And Interactions.*** <a:dr_heats:1169626554456875170>`,
+        `> ***[${message.author.username}](https://discord.com/users/${message.author.id})*** ***Konichiwa!!*** ***Our Bot Is A Versatile And Intelligent Digital Assistant Designed To Handle A Wide Range Of Tasks And Interactions.***`,
       )
       .setImage(client.config.links.arrkiii)
       .setColor(client.color)
