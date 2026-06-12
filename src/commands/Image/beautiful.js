@@ -1,5 +1,4 @@
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
-const { Canvafy } = require("canvafy");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "beautiful",
@@ -14,45 +13,28 @@ module.exports = {
   execute: async (message, args, client) => {
     const user = message.mentions.users.first() || message.author;
 
-    try {
-      const image = await new Canvafy.Beautiful()
-        .setAvatar(
-          user.displayAvatarURL({
-            extension: "png",
-            size: 512,
-          })
-        )
-        .build();
+    const avatar = user.displayAvatarURL({
+      extension: "png",
+      size: 512,
+      forceStatic: true,
+    });
 
-      const attachment = new AttachmentBuilder(image, {
-        name: "beautiful.png",
-      });
+    const image = `https://some-random-api.com/canvas/beautiful?avatar=${encodeURIComponent(
+      avatar
+    )}`;
 
-      const embed = new EmbedBuilder()
-        .setColor(client.color)
-        .setDescription(`✨ ${user} is beautiful!`)
-        .setImage("attachment://beautiful.png")
-        .setFooter({
-          text: `Requested by ${message.author.username}`,
-          iconURL: message.author.displayAvatarURL({ dynamic: true }),
-        })
-        .setTimestamp();
+    const embed = new EmbedBuilder()
+      .setColor(client.color)
+      .setDescription(`✨ ${user} is beautiful!`)
+      .setImage(image)
+      .setFooter({
+        text: `Requested by ${message.author.username}`,
+        iconURL: message.author.displayAvatarURL({ dynamic: true }),
+      })
+      .setTimestamp();
 
-      return message.channel.send({
-        embeds: [embed],
-        files: [attachment],
-      }).catch(() => null);
-
-    } catch (err) {
-      console.log("[BEAUTIFUL]", err);
-
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Red")
-            .setDescription("❌ Failed to generate image."),
-        ],
-      }).catch(() => null);
-    }
+    return message.channel.send({
+      embeds: [embed],
+    }).catch(() => null);
   },
 };
