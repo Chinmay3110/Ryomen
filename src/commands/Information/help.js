@@ -22,7 +22,7 @@ module.exports = {
         name: `${client.emoji.search} **__My Commands:__**`,
         value: `
 > ${client.emoji.antinuke} \`:\` **Antinuke**
-> <:meko:1389892185754959912> \`:\` **Automod**
+> ${client.emoji.moderation} \`:\` **Automod**
 > ${client.emoji.config} \`:\` **Config**
 > ${client.emoji.extra} \`:\` **Extra**
 > ${client.emoji.fun} \`:\` **Fun**
