@@ -1,10 +1,3 @@
-/** @format
- *
- * Arrkiii By Ozuma xd
- * © 2024 Arrkiii Development
- *
- */
-
 const {
   EmbedBuilder,
   MessageFlags,
