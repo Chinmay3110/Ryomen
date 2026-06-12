@@ -14,7 +14,7 @@ module.exports = {
   logs: "https://canary.discord.com/api/webhooks/1514345345939800195/lmdFq6Eo7qx3R9aCAH-2eMjSZKF7Qz1n1YEJNSF8NtqZE5OWo293d1eEAqT3anl8P8I-",
   node_source: "ytsearch",
   topgg:
-    "here",
+    "https://top.gg/bot/1514262534637748334",
   links: {
     BG: "https://cdn.discordapp.com/attachments/1061636453437804544/1186002755924525166/20231217_232106.jpg",
     support: "https://discord.gg/urV9mkfW9t",
