@@ -70,7 +70,7 @@ client.emoji = {
   idle: "<:idle:1230952869679599687>",
   voice: "<:voice:1514281335571873995>",
   fun: "<:fun:1514282031725547690>",
-  moderation: "<:mod:1231172366244253716>",
+  moderation: "<:Mods:1514287916858212713>",
   pfp: "<:pfp:1514282272386453538>",
   autoresponder: "<:autoresponder:1312668357199401003>",
   insta: "<:Insta:1196715538773180478>",
