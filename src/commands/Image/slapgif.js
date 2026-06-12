@@ -1,42 +1,93 @@
-const {
-  EmbedBuilder,
-  MessageFlags,
-  ButtonBuilder,
-  ActionRowBuilder,
-  ButtonStyle,
-} = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
+const axios = require("axios");
 
 module.exports = {
   name: "slap",
   category: "Image",
   aliases: ["chaate", "slp"],
   cooldown: 3,
-  description: "",
-  args: false,
-  usage: "Slap <Mention Or ID> | <Text>",
-  userPerms: [],
+  description: "Slap someone",
+  args: true,
+  usage: "<user>",
   owner: false,
-  execute: async (message, args, client, prefix) => {
-    const Member =
-      message.mentions.members.first() ||
-      message.guild.members.cache.get(args[0]);
-    if (!Member)
-      return message.channel.send("Please Mention Or Give ID Of A Member!");
 
-    const Other = args.slice(1).join(" ") || `Shut up ${Member.user.username} `;
-    if (Other.length > 50)
-      return message.channel.send("Characters Limit Reached - 50!");
+  execute: async (message, args, client) => {
+    const user = message.mentions.users.first();
 
-    const Embed = new EmbedBuilder()
-      .setTitle("Slapped")
+    if (!user) {
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(client.color)
+            .setDescription("Please mention a user to slap."),
+        ],
+      }).catch(() => null);
+    }
+
+    if (user.id === message.author.id) {
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(client.color)
+            .setDescription("You can't slap yourself."),
+        ],
+      }).catch(() => null);
+    }
+
+    let image = null;
+
+    const apis = [
+      {
+        url: "https://nekos.best/api/v2/slap",
+        parser: (data) => data?.results?.[0]?.url,
+      },
+      {
+        url: "https://api.otakugifs.xyz/gif?reaction=slap",
+        parser: (data) => data?.url,
+      },
+      {
+        url: "https://api.waifu.pics/sfw/slap",
+        parser: (data) => data?.url,
+      },
+    ];
+
+    for (const api of apis) {
+      try {
+        const res = await axios.get(api.url, {
+          timeout: 10000,
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+          },
+        });
+
+        image = api.parser(res.data);
+
+        if (image) break;
+      } catch (err) {
+        console.log(
+          `[SLAP] ${api.url} failed:`,
+          err.code || err.message
+        );
+      }
+    }
+
+    if (!image) {
+      image =
+        "https://media.tenor.com/lx2WSGRk8bcAAAAC/anime-slap.gif";
+    }
+
+    const embed = new EmbedBuilder()
       .setColor(client.color)
-      .setImage(
-        encodeURI(
-          `https://vacefron.nl/api/batmanslap?text1=bruh&text2=${Other}&batman=${message.author.avatarURL({ format: "png" })}&robin=${Member.user.displayAvatarURL({ format: "png" })}`,
-        ),
-      )
+      .setDescription(`👋 ${message.author} slapped ${user}`)
+      .setImage(image)
+      .setFooter({
+        text: `Requested by ${message.author.username}`,
+        iconURL: message.author.displayAvatarURL({ dynamic: true }),
+      })
       .setTimestamp();
 
-    return message.channel.send({ embeds: [Embed] });
+    return message.channel.send({
+      embeds: [embed],
+    }).catch(() => null);
   },
 };
