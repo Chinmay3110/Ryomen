@@ -2,84 +2,83 @@ const { EmbedBuilder } = require("discord.js");
 const NopAccess = require("../../schema/accessnop");
 const OxP1 = require("../../schema/noprefix");
 const OxP2 = require("../../schema/votebypassuser");
-const ms = require("ms"); // Install this with `npm install ms`
+const ms = require("ms");
 
 module.exports = {
-  name: `add`,
+  name: "add",
   aliases: ["+"],
   category: "Owner",
-  description: "Manage permissions and badges with a duration.",
+  description: "Add NoPrefix / VoteBypass with duration.",
   args: true,
-  usage: "<user> <type> <duration>",
+  usage: "<user> <noprefix/votebypass/all> <duration>",
   owner: false,
-  execute: async (message, args, client, prefix) => {
-    const OzuMA = await NopAccess.findOne({ userId: message.author.id });
-    if (!OzuMA) {
-      return message.channel.send(
-        "___You are not allowed to use this command!___",
-      );
+
+  execute: async (message, args, client) => {
+    const access = await NopAccess.findOne({ userId: message.author.id });
+
+    if (!access) {
+      return message.channel.send("___You are not allowed to use this command!___");
     }
 
-    // Parse arguments
     const user =
-      message.mentions.users.first() || client.users.cache.get(args[0]);
-    const type = args[1]?.toLowerCase(); // Type: noprefix, votebypass, or all
+      message.mentions.users.first() ||
+      await client.users.fetch(args[0]).catch(() => null);
+
+    const type = args[1]?.toLowerCase();
     const duration = args[2];
 
-    // Validate arguments
     if (!user) {
-      return message.channel.send(
-        "Please mention a user or provide a valid user ID.",
-      );
-    }
-    if (!type || !["noprefix", "votebypass", "all"].includes(type)) {
-      return message.channel.send(
-        "Invalid type! Use `noprefix`, `votebypass`, or `all`.",
-      );
-    }
-    if (!duration || !ms(duration)) {
-      return message.channel.send(
-        "Please provide a valid duration (e.g., `1h`, `1d`, `30m`).",
-      );
+      return message.channel.send("Please mention a user or provide a valid user ID.");
     }
 
-    const expirationTime = Date.now() + ms(duration);
+    if (!["noprefix", "votebypass", "all"].includes(type)) {
+      return message.channel.send("Invalid type! Use `noprefix`, `votebypass`, or `all`.");
+    }
 
-    // Handle types
+    const time = ms(duration);
+
+    if (!duration || !time) {
+      return message.channel.send("Please provide a valid duration like `1h`, `1d`, `30m`, `7d`.");
+    }
+
+    const expiresAt = Date.now() + time;
+    const added = [];
+
     if (type === "noprefix" || type === "all") {
-      const nopData = await OxP1.findOne({ userId: user.id });
-      if (nopData) {
-        return message.channel.send(
-          `<:arrkiii:1187678838759628800> | This user already has NoPrefix.`,
-        );
-      }
+      await OxP1.findOneAndUpdate(
+        { userId: user.id },
+        {
+          userId: user.id,
+          noprefix: true,
+          expiresAt: expiresAt,
+        },
+        { upsert: true, new: true }
+      );
 
-      await OxP1.create({
-        userId: user.id,
-        noprefix: true,
-        expiresAt: expirationTime,
-      });
-      message.channel.send(`✅ Added **NoPrefix** to ${user} for ${duration}.`);
+      added.push("NoPrefix");
     }
 
     if (type === "votebypass" || type === "all") {
-      const voteData = await OxP2.findOne({ userId: user.id });
-      if (voteData) {
-        return message.channel.send(
-          `<:arrkiii:1187678838759628800> | This user already has VoteBypass.`,
-        );
-      }
-
-      await OxP2.create({ userId: user.id, expiresAt: expirationTime });
-      message.channel.send(
-        `✅ Added **VoteBypass** to ${user} for ${duration}.`,
+      await OxP2.findOneAndUpdate(
+        { userId: user.id },
+        {
+          userId: user.id,
+          expiresAt: expiresAt,
+        },
+        { upsert: true, new: true }
       );
+
+      added.push("VoteBypass");
     }
 
-    if (type === "all") {
-      message.channel.send(
-        `✅ Added **NoPrefix** and **VoteBypass** to ${user} for ${duration}.`,
-      );
-    }
+    return message.channel.send({
+      embeds: [
+        new EmbedBuilder()
+          .setColor(client.color || "#2b2d31")
+          .setDescription(
+            `✅ Added **${added.join(" + ")}** to ${user} for **${duration}**.`
+          ),
+      ],
+    });
   },
 };
