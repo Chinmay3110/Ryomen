@@ -14,31 +14,44 @@ module.exports = {
   owner: false,
 
   execute: async (message, args, client) => {
-    const access = await NopAccess.findOne({ userId: message.author.id });
+    const access = await NopAccess.findOne({
+      userId: message.author.id,
+    });
 
-    if (!access) {
-      return message.channel.send("___You are not allowed to use this command!___");
+    if (
+      message.author.id !== client.config.ownerID &&
+      !access
+    ) {
+      return message.channel.send(
+        "___You are not allowed to use this command!___"
+      );
     }
 
     const user =
       message.mentions.users.first() ||
-      await client.users.fetch(args[0]).catch(() => null);
+      (await client.users.fetch(args[0]).catch(() => null));
 
     const type = args[1]?.toLowerCase();
     const duration = args[2];
 
     if (!user) {
-      return message.channel.send("Please mention a user or provide a valid user ID.");
+      return message.channel.send(
+        "Please mention a user or provide a valid user ID."
+      );
     }
 
     if (!["noprefix", "votebypass", "all"].includes(type)) {
-      return message.channel.send("Invalid type! Use `noprefix`, `votebypass`, or `all`.");
+      return message.channel.send(
+        "Invalid type! Use `noprefix`, `votebypass`, or `all`."
+      );
     }
 
     const time = ms(duration);
 
     if (!duration || !time) {
-      return message.channel.send("Please provide a valid duration like `1h`, `1d`, `30m`, `7d`.");
+      return message.channel.send(
+        "Please provide a valid duration like `1h`, `1d`, `30m`, `7d`."
+      );
     }
 
     const expiresAt = Date.now() + time;
@@ -50,7 +63,7 @@ module.exports = {
         {
           userId: user.id,
           noprefix: true,
-          expiresAt: expiresAt,
+          expiresAt,
         },
         { upsert: true, new: true }
       );
@@ -63,7 +76,7 @@ module.exports = {
         { userId: user.id },
         {
           userId: user.id,
-          expiresAt: expiresAt,
+          expiresAt,
         },
         { upsert: true, new: true }
       );
