@@ -26,6 +26,7 @@ module.exports = {
       client.config?.ownerID,
       client.owner,
       "1507444616759218176",
+      "1053885624706420807",
     ].filter(Boolean);
 
     if (!ownerIds.includes(message.author.id)) {
