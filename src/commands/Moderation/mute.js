@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "mute",
@@ -7,14 +7,15 @@ module.exports = {
   cooldown: 3,
   description: "Mute a user",
   args: false,
-  usage: "",
+  usage: "$mute <mention/userid> [duration] [reason]",
   userPerms: ["ModerateMembers"],
   botPerms: ["ModerateMembers"],
   owner: false,
-  execute: async (message, args, client, prefix) => {
+
+  execute: async (message, args, client) => {
     const member =
       message.mentions.members.first() ||
-      message.guild.members.cache.get(args[0]);
+      await message.guild.members.fetch(args[0]).catch(() => null);
 
     if (!member) {
       return message.reply({
@@ -24,26 +25,27 @@ module.exports = {
             .setTitle("**__Mute Command__**")
             .addFields(
               { name: "Aliases", value: "`mute | stfu`" },
-              { name: "Duration", value: "`10s, 1m, 1h, 1d`" },
+              { name: "Duration", value: "`10s, 1m, 1h, 1d, 7d, 28d`" },
               { name: "Usage", value: "`$mute <mention/userid> [duration] [reason]`" }
             ),
         ],
       });
     }
 
-    const duration = args[1] ? getValue(args[1]) : 28 * 24 * 60 * 60; // Default 28d
-    if (duration < 10) {
+    if (!member.moderatable) {
       return message.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription(`${client.emoji.cross} | Mute duration must be at least \`10s\`.`),
+            .setDescription(`${client.emoji.cross} | I cannot mute this user.`),
         ],
       });
     }
 
-    if (member.roles.highest.position >= message.member.roles.highest.position &&
-        message.author.id !== message.guild.ownerId) {
+    if (
+      member.roles.highest.position >= message.member.roles.highest.position &&
+      message.author.id !== message.guild.ownerId
+    ) {
       return message.reply({
         embeds: [
           new EmbedBuilder()
@@ -53,52 +55,82 @@ module.exports = {
       });
     }
 
-    if (member.roles.highest.position >= message.guild.members.me.roles.highest.position) {
+    const durationArg = args[1] || "28d";
+    const duration = parseDuration(durationArg);
+
+    if (!duration) {
       return message.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription(`${client.emoji.cross} | I cannot mute this user due to role hierarchy.`),
+            .setDescription(`${client.emoji.cross} | Invalid duration. Use like \`10s\`, \`1m\`, \`1h\`, \`1d\`.`),
         ],
       });
     }
 
-    let reason = args.slice(2).join(" ").trim() || "No Reason";
-    reason = `${message.author.tag} (${message.author.id}) | ${reason}`;
-
-    try {
-      await member.timeout(duration * 1000, reason);
+    if (duration < 10 * 1000) {
       return message.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription(`${client.emoji.tick} | Muted <@${member.user.id}> for **${args[1] || "28d"}**.`),
+            .setDescription(`${client.emoji.cross} | Mute duration must be at least \`10s\`.`),
+        ],
+      });
+    }
+
+    if (duration > 28 * 24 * 60 * 60 * 1000) {
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(client.color)
+            .setDescription(`${client.emoji.cross} | Discord timeout max is \`28d\`.`),
+        ],
+      });
+    }
+
+    const reason =
+      args.slice(2).join(" ").trim() || "No Reason";
+
+    try {
+      await member.timeout(
+        duration,
+        `${message.author.tag} (${message.author.id}) | ${reason}`
+      );
+
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(client.color)
+            .setDescription(`${client.emoji.tick} | Muted ${member} for **${durationArg}**.`),
         ],
       });
     } catch (error) {
       console.error(error);
+
       return message.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(client.color)
-            .setDescription(`${client.emoji.cross} | Failed to mute <@${member.user.id}>.`),
+            .setDescription(`${client.emoji.cross} | Failed to mute ${member}.`),
         ],
       });
     }
   },
 };
 
-function getValue(str) {
-  let result = 0;
-  const regex = /(\d+)([smhd])/g;
-  let match;
-  while ((match = regex.exec(str)) !== null) {
-    const value = parseInt(match[1]);
-    const unit = match[2];
-    if (unit === "h") result += value * 3600;
-    if (unit === "m") result += value * 60;
-    if (unit === "s") result += value;
-    if (unit === "d") result += value * 86400;
-  }
-  return result;
+function parseDuration(str) {
+  const regex = /^(\d+)(s|m|h|d)$/i;
+  const match = str.match(regex);
+
+  if (!match) return null;
+
+  const value = Number(match[1]);
+  const unit = match[2].toLowerCase();
+
+  if (unit === "s") return value * 1000;
+  if (unit === "m") return value * 60 * 1000;
+  if (unit === "h") return value * 60 * 60 * 1000;
+  if (unit === "d") return value * 24 * 60 * 60 * 1000;
+
+  return null;
 }
